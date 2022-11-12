@@ -1,0 +1,80 @@
+includes:
+    # - ./vendor/canvural/larastan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/ergebnis/phpstan-rules/rules.neon
+    - ./vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
+    - ./vendor/tpetry/laravel-postgresql-enhanced/phpstan-extension.neon
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+services:
+    -
+        class: Vural\LarastanStrictRules\Rules\NoDynamicWhereRule
+        tags:
+            - phpstan.rules.rule
+    -
+        class: Vural\LarastanStrictRules\Rules\ListenerShouldHaveVoidReturnTypeRule
+        arguments:
+            listenerPaths:
+                - app/Listeners
+    -
+        class: Vural\LarastanStrictRules\Rules\ScopeShouldReturnQueryBuilderRule
+        tags:
+            - phpstan.rules.rule
+    -
+        class: Vural\LarastanStrictRules\Rules\NoLocalQueryScopeRule
+        tags:
+            - phpstan.rules.rule
+    -
+        class: Vural\LarastanStrictRules\Rules\NoPropertyAccessorRule
+        tags:
+            - phpstan.rules.rule
+
+parameters:
+
+    paths:
+        - app
+        - routes
+        - config
+        - database
+        - tests
+
+    # The level 9 is the highest level
+    level: 8
+
+    ignoreErrors:
+        - '#PHPDoc tag @var#'
+        - '#Access to property \$name on an unknown class#'
+        - '#Access to an undefined property App\\Models\\Tag::\$links#'
+        - '#Access to an undefined property App\\Models\\Tag::\$type#'
+        - '#Access to an undefined property App\\Models\\[a-zA-Z0-9\\_]+::\$[a-zA-Z0-9\\_]+#'
+        - '#is not allowed to extend.#'
+        - '#Dynamic call to static method.#'
+        - '#has a nullable return type declaration.#'
+        - '#has parameter \$[a-zA-Z]+ with default value.#'
+        - '#has parameter \$[a-zA-Z]+ with null as default value.#'
+        - '#has parameter \$[a-zA-Z]+ with a nullable type declaration.#'
+        - '#Parameter \#[0-9] \$column of method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:whereIn\(\) expects string, Illuminate\\Database\\Query\\Expression given.#'
+        - '#is protected, but since the containing class is final, it can be private.#'
+        - "#Undefined variable: \\$this#"
+        - "#Call to static method user\\(\\) on an unknown class Auth#"
+        - "#Variable method call on Illuminate\\\\Database\\\\Eloquent\\\\Model#"
+        - "#Variable property access on Illuminate\\\\Database\\\\Eloquent\\\\Model#"
+        - "#Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model#"
+        - "#Short ternary operator is not allowed#"
+        - "#Construct empty\\(\\) is not allowed#"
+        - "#construct empty\\(\\) should not be used#"
+        - "#Thrown exceptions in a catch block must bundle the previous exception#"
+        - "#is not allowed to extend \"Exception\"#"
+        - "#Call to an undefined method Illuminate\\\\Testing\\\\TestResponse::assert(V|Inv)alid#"
+
+
+#    excludePaths:
+#        - ./vendor
+
+    templatePaths:
+        - resources/views
+
+    checkMissingIterableValueType: true
+    checkOctaneCompatibility: false
+    checkGenericClassInNonGenericObjectType: false
+    reportUnmatchedIgnoredErrors: false

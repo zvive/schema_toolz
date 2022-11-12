@@ -1,0 +1,116 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Str;
+use {{ namespacedModel }};
+use {{ namespacedUserModel }};
+class {{ class }}
+{
+    use HandlesAuthorization;
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny({{ user }} $user): bool|Response
+    {
+        if($user === null){
+            return false;
+        }
+    }
+
+    /**
+     * Determine whether the user can view the {{ model }} model.
+     */
+    public function view({{ user }} $user, {{ model }} ${{ modelVariable }}): bool|Response
+    {
+        if($user === null){
+            return false;
+        }
+        /**
+         *    ex: admin overrides published status
+         *    if ($user->can('view unpublished {{modelVariablePlural}}')) {
+         *        return true;
+         *    }
+         *  // admin overrides published status
+         *  if ($user->can('view unpublished {{modelVariablePlural}}')) {
+         *      return true;
+         *  }
+         */
+         if($user->can('view {{modelVariablePlural}}')){
+            return true;
+         }
+         if(!$model->user_id){
+            return false;
+         }
+
+         return $model->user_id == $user->id;
+    }
+
+    /**
+     * Determine whether the user can create {{ model }} models.
+     */
+    public function create({{ user }} $user): bool|Response
+    {
+        if ($user->can('create {{modelVariablePlural}}')) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update({{ user }} $user, {{ model }} ${{ modelVariable }}): bool|Response
+    {
+         if ($user->can('edit own {{modelVariablePlural}}')) {
+            return $user->id == $post->user_id;
+        }
+
+        if ($user->can('edit all {{modelVariablePlural}}')) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete({{ user }} $user, {{ model }} ${{ modelVariable }}): bool|Response
+    {
+        if ($user->can('delete own {{modelVariablePlural}}')) {
+            return $user->id == $post->user_id;
+        }
+
+        if ($user->can('delete any {{modelVariable}}')) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore({{ user }} $user, {{ model }} ${{ modelVariable }}): bool|Response
+    {
+        if ($user->can('restore own {{modelVariablePlural}}')) {
+            return $user->id == $post->user_id;
+        }
+
+        if ($user->can('restore any {{modelVariable}}')) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete({{ user }} $user, {{ model }} ${{ modelVariable }}): bool|Response
+    {
+        if ($user->can('force delete own {{modelVariablePlural}}')) {
+            return $user->id == $post->user_id;
+        }
+
+        if ($user->can('force delete any {{modelVariable}}')) {
+            return true;
+        }
+    }
+}

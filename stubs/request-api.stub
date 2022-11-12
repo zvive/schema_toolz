@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Models\{{ Model }};
+use Orion\Http\Requests\Request as FormRequest;
+use App\Http\Requests\Contracts\ApiRequest;
+final class {{requestClass}} extends FormRequest implements ApiRequest
+{
+    public function authorize():bool
+    {
+        ${{model}} = {{Model}}::find($this->route('{{model}}'));
+
+        return ${{model}} && $this->user()->can('edit',  ${{model}});
+    }
+
+    public function getModel() : {{ Model }} {
+        return {{ Model }}::class;
+    }
+
+    public function commonRules() : array
+    {
+        return [
+            // 'title' => 'required'
+        ];
+    }
+
+    public function storeRules() : array
+    {
+        return [
+            // 'status' => 'required|in:draft,review'
+        ];
+    }
+
+}
